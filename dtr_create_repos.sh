@@ -20,7 +20,10 @@ while IFS= read -r row ; do
     reponame=$(echo "$row" | jq -r .name)
     repodetails=$(echo "$row" | jq 'del(.id)')
 
+    # TODO: Check if namespace exists
+    
     # TODO: Check if repository exists
+
     # Create a repository with the settings read from repo_list
     curl "${CURLOPTS[@]}" -X POST -d "$repodetails" https://${DTR_HOSTNAME}/api/v0/repositories/${namespace}
     echo "Created ==> Org: ${namespace}, Repo: ${reponame}"
