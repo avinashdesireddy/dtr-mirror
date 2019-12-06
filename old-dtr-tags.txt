@@ -1,0 +1,8 @@
+old-dtr.avinash.dockerps.io/alpine:new-mirror
+old-dtr.avinash.dockerps.io/alpine:latest
+old-dtr.avinash.dockerps.io/fedora:latest
+old-dtr.avinash.dockerps.io/fedora:27
+old-dtr.avinash.dockerps.io/fedora:26
+old-dtr.avinash.dockerps.io/nginx:latest
+old-dtr.avinash.dockerps.io/redis:latest
+old-dtr.avinash.dockerps.io/ubuntu:latest
