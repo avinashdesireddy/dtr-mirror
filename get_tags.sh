@@ -26,23 +26,30 @@ CURLOPTS=(-kLsS -H 'accept: application/json' -H 'content-type: application/json
 ## Read repositories file
 repo_list=$(cat ${REPOSITORIES_FILE} | jq -c -r '.[]') 
 
+tag_count=0
 # Loop through repositories
 while IFS= read -r row ; do
     namespace=$(echo "$row" | jq -r .namespace)
     reponame=$(echo "$row" | jq -r .name)
 
     tags=$(curl -ksLS -u ${DTR_USER}:${DTR_PASSWORD} -X GET "https://$DTR_HOSTNAME/api/v0/repositories/${namespace}/${reponame}/tags?pageSize=100000000")
+
+    tag_headers=$(curl -ks -I -u ${DTR_USER}:${DTR_PASSWORD} -X GET "https://$DTR_HOSTNAME/api/v0/repositories/${namespace}/${reponame}/tags?pageSize=1&count=true")
+    tag_count=$(echo "$tag_headers" | grep 'X-Resource-Count:' | sed 's/[^0-9]*//g')
+    tag_count=$(($tag_count + $tag_count))
+
     tags_list=$(echo $tags | jq -c -r '.[]')
-    if [ -z "$tags_list" ]
+
+    if [[ $tag_count == 0 ]]
         then
-            continue
+            echo "Skipping..."
+    else
+        while IFS= read -r tag ; do
+            tagname=$(echo "$tag" | jq -r .name)
+            echo ${namespace}/${reponame}:${tagname} >> $TAGS_FILE
+        done <<< "$tags_list"
     fi
-    echo "Repository ==> Org: ${namespace}/${reponame}"
-    while IFS= read -r tag ; do
-        tagname=$(echo "$tag" | jq -r .name)
-        echo ${namespace}/${reponame}:${tagname} >> $TAGS_FILE
-    done <<< "$tags_list"
-    
+    echo "Repository ==> Org: ${namespace}/${reponame} ==> TagCount: $tag_count"
 done <<< "$repo_list"
 echo "=========================================\\n"
 
