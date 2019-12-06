@@ -26,7 +26,6 @@ CURLOPTS=(-kLsS -H 'accept: application/json' -H 'content-type: application/json
 ## Read repositories file
 repo_list=$(cat ${REPOSITORIES_FILE} | jq -c -r '.[]') 
 
-tag_count=0
 # Loop through repositories
 while IFS= read -r row ; do
     namespace=$(echo "$row" | jq -r .namespace)
@@ -34,9 +33,8 @@ while IFS= read -r row ; do
 
     tags=$(curl -ksLS -u ${DTR_USER}:${DTR_PASSWORD} -X GET "https://$DTR_HOSTNAME/api/v0/repositories/${namespace}/${reponame}/tags?pageSize=100000000")
 
-    tag_headers=$(curl -ks -I -u ${DTR_USER}:${DTR_PASSWORD} -X GET "https://$DTR_HOSTNAME/api/v0/repositories/${namespace}/${reponame}/tags?pageSize=1&count=true")
-    t_count=$(echo "$tag_headers" | grep 'X-Resource-Count:' | sed 's/[^0-9]*//g')
-    tag_count=$(($tag_count + $t_count))
+    tag_count=$(echo $tags | jq 'length')
+    echo $tags > tags.json
 
     tags_list=$(echo $tags | jq -c -r '.[]')
 
