@@ -35,8 +35,8 @@ while IFS= read -r row ; do
     tags=$(curl -ksLS -u ${DTR_USER}:${DTR_PASSWORD} -X GET "https://$DTR_HOSTNAME/api/v0/repositories/${namespace}/${reponame}/tags?pageSize=100000000")
 
     tag_headers=$(curl -ks -I -u ${DTR_USER}:${DTR_PASSWORD} -X GET "https://$DTR_HOSTNAME/api/v0/repositories/${namespace}/${reponame}/tags?pageSize=1&count=true")
-    tag_count=$(echo "$tag_headers" | grep 'X-Resource-Count:' | sed 's/[^0-9]*//g')
-    tag_count=$(($tag_count + $tag_count))
+    t_count=$(echo "$tag_headers" | grep 'X-Resource-Count:' | sed 's/[^0-9]*//g')
+    tag_count=$(($tag_count + $t_count))
 
     tags_list=$(echo $tags | jq -c -r '.[]')
 
