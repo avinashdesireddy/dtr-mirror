@@ -46,4 +46,4 @@ while IFS= read -r row ; do
 done <<< "$repo_list"
 echo "=========================================\\n"
 
-sort $TAGS_FILE sorted-${TAGS_FILE}
+sort $TAGS_FILE > sorted-${TAGS_FILE}
