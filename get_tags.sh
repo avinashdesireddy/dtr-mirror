@@ -40,9 +40,10 @@ while IFS= read -r row ; do
     echo "Repository ==> Org: ${namespace}/${reponame}"
     while IFS= read -r tag ; do
         tagname=$(echo "$tag" | jq -r .name)
-        echo ${DTR_HOSTNAME}/${reponame}:${tagname} >> $TAGS_FILE
+        echo ${namespace}/${reponame}:${tagname} >> $TAGS_FILE
     done <<< "$tags_list"
     
 done <<< "$repo_list"
 echo "=========================================\\n"
 
+sort $TAGS_FILE sorted-${TAGS_FILE}
