@@ -27,8 +27,8 @@ tags=0
 while IFS= read -r row ; do
     namespace=$(echo "$row" | jq -r .namespace)
     reponame=$(echo "$row" | jq -r .name)
-    tag_headers=$(curl -ks -I -u ${DTR_USER}:${DTR_PASSWORD} -X GET "https://$DTR_HOSTNAME/api/v0/repositories/${namespace}/${reponame}/tags?pageSize=1&count=true")
-    tag_count=$(echo "$tag_headers" | grep 'X-Resource-Count:' | sed 's/[^0-9]*//g')
+    tag_list=$(curl -ksLS -u ${DTR_USER}:${DTR_PASSWORD} -X GET "https://$DTR_HOSTNAME/api/v0/repositories/${namespace}/${reponame}/tags?pageSize=10000000")
+    tag_count=$(echo "$tag_list" | jq 'length' )
     echo "Org: ${namespace}, Repo: ${reponame}, Tags: ${tag_count}"
     tags=$(($tags + $tag_count))
 done <<< "$repo_list"
