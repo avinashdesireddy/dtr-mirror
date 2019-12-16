@@ -1,5 +1,15 @@
 #!/bin/bash
 
+function status (){
+  echo " Usage: $0 <repo-file-name>"
+  exit 1
+}
+
+if [ -z "$1" ]
+  then
+    status
+fi
+
 ## Capture DTR Info
 [ -z "$DTR_HOSTNAME" ] && read -p "Enter the DTR hostname and press [ENTER]:" DTR_HOSTNAME
 [ -z "$DTR_USER" ] && read -p "Enter the DTR username and press [ENTER]:" DTR_USER

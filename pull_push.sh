@@ -1,5 +1,15 @@
 #!/bin/bash
 
+function status (){
+  echo " Usage: $0 <required run_repo_mirror.sh scripts stdout in a file>"
+  exit 1
+}
+
+if [ -z "$1" ]
+  then
+    status
+fi
+
 ## Capture DTR Info
 [ -z "$DTR_HOSTNAME" ] && read -p "Enter the DTR hostname and press [ENTER]:" DTR_HOSTNAME
 [ -z "$DTR_USER" ] && read -p "Enter the DTR username and press [ENTER]:" DTR_USER
@@ -9,7 +19,7 @@ echo "***************************************\\n"
 
 [ -z "$REMOTE_DTR_HOSTNAME" ] && read -p "Enter REMOTE DTR hostname and press [ENTER]:" REMOTE_DTR_HOSTNAME
 
-REPOSITORIES_FILE=repo.txt
+REPOSITORIES_FILE=$1
 
 TOKEN=$(curl -kLsS -u ${DTR_USER}:${DTR_PASSWORD} "https://${DTR_HOSTNAME}/auth/token" | jq -r '.token')
 CURLOPTS=(-kLsS -H 'accept: application/json' -H 'content-type: application/json' -H "Authorization: Bearer ${TOKEN}")

@@ -1,12 +1,22 @@
 #!/bin/bash
 
+function status (){
+  echo " Usage: $0 <repo-file-name>"
+  exit 1
+}
+
+if [ -z "$1" ]
+  then
+    status
+fi
+
 ## Capture DTR Info
 [ -z "$DTR_HOSTNAME" ] && read -p "Enter the DTR hostname and press [ENTER]:" DTR_HOSTNAME
 [ -z "$DTR_USER" ] && read -p "Enter the DTR username and press [ENTER]:" DTR_USER
 [ -z "$DTR_PASSWORD" ] && read -s -p "Enter the DTR token or password and press [ENTER]:" DTR_PASSWORD
 echo "***************************************\\n"
 
-REPOSITORIES_FILE=repositories.json
+REPOSITORIES_FILE=$1
 
 TOKEN=$(curl -kLsS -u ${DTR_USER}:${DTR_PASSWORD} "https://${DTR_HOSTNAME}/auth/token" | jq -r '.token')
 CURLOPTS=(-kLsS -H 'accept: application/json' -H 'content-type: application/json' -H "Authorization: Bearer ${TOKEN}")

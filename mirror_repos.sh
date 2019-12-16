@@ -1,10 +1,21 @@
 #!/bin/bash
 
+function status (){
+  echo " Usage: $0 <repo-file-name>"
+  exit 1
+}
+
+if [ -z "$1" ]
+  then
+    status
+fi
+
 ## Capture DTR Info
+echo "********** SOURCE DTR TO CONFIGURE MIRROR (NEW DTR) ******************"
 [ -z "$DTR_HOSTNAME" ] && read -p "Enter the DTR hostname and press [ENTER]:" DTR_HOSTNAME
 [ -z "$DTR_USER" ] && read -p "Enter the DTR username and press [ENTER]:" DTR_USER
 [ -z "$DTR_PASSWORD" ] && read -s -p "Enter the DTR token or password and press [ENTER]:" DTR_PASSWORD
-echo "********* REMOTE DTR CONFIG ***********\\n"
+echo "********* REMOTE DTR CONFIG - Location to pull images from (OLD DTR) ***********\\n"
 [ -z "$REMOTE_DTR_HOSTNAME" ] && read -p "Enter the REMOTE DTR hostname and press [ENTER]:" REMOTE_DTR_HOSTNAME
 [ -z "$REMOTE_DTR_USER" ] && read -p "Enter the DTR username and press [ENTER]:" REMOTE_DTR_USER
 [ -z "$REMOTE_DTR_PASSWORD" ] && read -s -p "Enter the DTR token or password and press [ENTER]:" REMOTE_DTR_PASSWORD
@@ -16,7 +27,7 @@ REMOTE_USER=${REMOTE_DTR_USER}
 REMOTE_TOKEN=${REMOTE_DTR_PASSWORD}
 REMOTE_URL="https://${REMOTE_DTR_HOSTNAME}"
 
-REPOSITORIES_FILE=repositories.json
+REPOSITORIES_FILE=$1
 
 TOKEN=$(curl -kLsS -u ${DTR_USER}:${DTR_PASSWORD} "https://${DTR_HOSTNAME}/auth/token" | jq -r '.token')
 CURLOPTS=(-kLsS -H 'accept: application/json' -H 'content-type: application/json' -H "Authorization: Bearer ${TOKEN}")
